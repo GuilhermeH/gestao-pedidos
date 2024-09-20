@@ -3,6 +3,7 @@
     public enum EstadoPedido
     {
         AguardandoProcessamento,
-        Cancelado
+        Cancelado,
+        ProcessandoPagamento
     }
 }

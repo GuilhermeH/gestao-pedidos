@@ -16,18 +16,26 @@ Console.WriteLine($"Valor total do pedido: {pedido.ValorTotal:C}");
 Console.WriteLine($"Estado do pedido: {pedido.Estado}");
 
 
-
-if (pedido.Itens.Any(i=>i.DescontoAplicado))
+if (pedido.Itens.Any(i => i.DescontoAplicado))
 {
     Console.WriteLine("Descontos:");
     foreach (var item in pedido.Itens)
-	{
-		if (item.DescontoAplicado)
-			Console.WriteLine($"{item.Produto.Desconto.GetType().Name} aplicado para o item {item.Produto.Descricao} no valor de {item.ValorDesconto}");
-	} 
-}
-else
-{
-	Console.WriteLine("Nenhum item elegível para desconto");
+    {
+        if (item.DescontoAplicado)
+            Console.WriteLine($"{item.Produto.Desconto.GetType().Name} aplicado para o item {item.Produto.Descricao} no valor de {item.ValorDesconto}");
+    }
 }
 
+Console.WriteLine("Para seguir com o pagamento digite '1', para cancelar o pedido qualquer tecla.");
+var seguirPagamento = Console.ReadKey().KeyChar - '0' == 1;
+
+if (!seguirPagamento)
+{
+    var pedidoCancelado = pedido.CancelarPedido();
+    if (pedidoCancelado)
+        Console.WriteLine("Pedido Cancelado");
+    else
+        Console.WriteLine("Erro ao cancelar pedido.");
+}
+
+pedido.ProcessandoPagamento();
