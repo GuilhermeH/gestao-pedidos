@@ -1,4 +1,6 @@
-﻿namespace Gestao.Pedidos.Recepcao
+﻿using Gestao.Pedidos.Pagamento;
+
+namespace Gestao.Pedidos.Recepcao
 {
     public class Pedido
     {
@@ -6,6 +8,7 @@
         public EstadoPedido Estado { get; private set; }
         public DateTime DataPedido { get; }
         public decimal ValorTotal { get; private set; }
+        public IPagamento Pagamento { get; }
 
         public Pedido()
         {
@@ -42,6 +45,11 @@
         }
 
         public void ProcessandoPagamento()
+        {
+            Estado = EstadoPedido.ProcessandoPagamento;
+        }
+
+        public void ConcluindoPagamento()
         {
             Estado = EstadoPedido.ProcessandoPagamento;
         }

@@ -1,7 +1,9 @@
 ﻿
+using Gestao.Pedidos.Pagamento;
 using Gestao.Pedidos.Recepcao;
 
 var pedido = new Pedido();
+var pagamentoService = new PagamentoService();
 
 var produtoA = new Produto("Produto A", 100m, new DescontoSazonal(DateTime.Now.AddDays(-15), DateTime.Now.AddDays(10), 3));
 var produtoB = new Produto("Produto B", 100m, new DescontoQuantidade(10, 15));
@@ -39,3 +41,10 @@ if (!seguirPagamento)
 }
 
 pedido.ProcessandoPagamento();
+
+var pagamento = await pagamentoService.ProcessarPagamento(pedido.Pagamento);
+
+if (pagamento)
+    pedido.ConcluindoPagamento();
+else
+    pedido.CancelarPedido();

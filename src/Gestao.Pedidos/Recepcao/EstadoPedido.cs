@@ -4,6 +4,7 @@
     {
         AguardandoProcessamento,
         Cancelado,
-        ProcessandoPagamento
+        ProcessandoPagamento,
+        PagamentoConcluido
     }
 }
