@@ -1,6 +1,26 @@
 ﻿namespace Gestao.Pedidos.Recepcao
 {
-    public record Produto(string Descricao, decimal PrecoUnitario, IDesconto Desconto);
+    public class Produto
+    {
+        public Produto(string descricao, decimal precoUnitario, int quantidadeEstoque, IDesconto desconto)
+        {
+            Codigo = Guid.NewGuid().ToString();
+            Descricao = descricao;
+            PrecoUnitario = precoUnitario;
+            QuantidadeEstoque = quantidadeEstoque;
+            Desconto = desconto;
+        }
+
+        public string Codigo { get; set; }
+        public string Descricao { get; }
+        public decimal PrecoUnitario { get; }
+        public int QuantidadeEstoque { get; private set; }
+        public IDesconto Desconto { get; }
+        public void DebitarEstoque(int quantidadeVendida)
+        {
+            QuantidadeEstoque = -quantidadeVendida;
+        }
+    }
 
     public record DescontoSazonal : IDesconto
     {
@@ -14,6 +34,7 @@
         public DateTime DataInicial { get; }
         public DateTime DataFinal { get; }
         public decimal Porcentagem { get; }
+        public int QuantidadeEstoque { get; }
 
         public decimal CalcularValor(decimal precoUnitario, int quantidade, DateTime dataPedido)
         {

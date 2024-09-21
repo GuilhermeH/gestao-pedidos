@@ -4,6 +4,7 @@ namespace Gestao.Pedidos.Recepcao
 {
     public class Pedido
     {
+        public Guid IdPedido { get; }
         public List<ItemPedido> Itens { get; } = [];
         public EstadoPedido Estado { get; private set; }
         public DateTime DataPedido { get; }
@@ -12,6 +13,7 @@ namespace Gestao.Pedidos.Recepcao
 
         public Pedido()
         {
+            IdPedido = Guid.NewGuid();
             Estado = EstadoPedido.AguardandoProcessamento;
             DataPedido = DateTime.Now;
         }
@@ -52,6 +54,11 @@ namespace Gestao.Pedidos.Recepcao
         public void ConcluindoPagamento()
         {
             Estado = EstadoPedido.ProcessandoPagamento;
+        }
+
+        public void SeparandoPedido()
+        {
+            Estado = EstadoPedido.SeprandoPedido;
         }
     }
 }
