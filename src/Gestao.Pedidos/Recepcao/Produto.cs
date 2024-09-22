@@ -5,8 +5,13 @@ namespace Gestao.Pedidos.Recepcao;
 
 public class Produto : Entity
 {
+    protected Produto() //EF
+    {
+        
+    }
     public Produto(string descricao, decimal precoUnitario, int quantidadeEstoque, IDesconto desconto)
     {
+        Id = Guid.NewGuid();
         Codigo = Guid.NewGuid().ToString();
         Descricao = descricao;
         PrecoUnitario = precoUnitario;
@@ -14,6 +19,7 @@ public class Produto : Entity
         Desconto = desconto;
     }
 
+    public Guid Id { get; set; }
     public string Codigo { get; set; }
     public string Descricao { get; }
     public decimal PrecoUnitario { get; }

@@ -6,6 +6,10 @@ namespace Gestao.Pedidos.Recepcao
 {
     public class Pedido : Entity
     {
+        protected Pedido()
+        {
+            
+        }
         public Guid IdPedido { get; }
         public List<ItemPedido> Itens { get; } = [];
         public EstadoPedido Estado { get; private set; }

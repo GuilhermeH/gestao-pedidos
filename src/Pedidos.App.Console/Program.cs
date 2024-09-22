@@ -16,7 +16,10 @@ internal class Program
     {
         var mediator = ConfigurarMediatR();
 
-        var pedido = new Pedido("cliente@teste.com");
+        Console.WriteLine("Informe um email válido: \n");
+        var emailCLiente = Console.ReadLine();
+
+        var pedido = new Pedido(emailCLiente);
         var pagamentoService = new PagamentoService();
         var comunicacao = new Comunicacao(mediator);
 

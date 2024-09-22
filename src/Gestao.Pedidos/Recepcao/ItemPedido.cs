@@ -2,6 +2,11 @@
 {
     public class ItemPedido
     {
+        protected ItemPedido()
+        {
+            Id = Guid.NewGuid();
+        }
+        public Guid Id { get; set; }
         public Produto Produto { get; private set; }
         public int Quantidade { get; }
         public decimal ValorDesconto { get; }
