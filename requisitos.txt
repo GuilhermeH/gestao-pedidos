@@ -34,6 +34,6 @@ Estoque".
 ● Pedidos que estão como "Aguardando Estoque" podem ser cancelados, realizando o Estorno de
 pagamento corretamente.
 
-● Cada troca de estado deve notificar o cliente, via email, o que aconteceu com o pedido.
+ok ● Cada troca de estado deve notificar o cliente, via email, o que aconteceu com o pedido.
 ● 1 vez por dia gerar uma lista de pedidos do dia anterior e enviar para um endereço de email do
 dono do produto.

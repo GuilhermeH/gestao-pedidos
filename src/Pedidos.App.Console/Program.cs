@@ -4,6 +4,7 @@ using Gestao.Pedidos.Estoque.Handler;
 using Gestao.Pedidos.Pagamento;
 using Gestao.Pedidos.Pagamento.Eventos;
 using Gestao.Pedidos.Recepcao;
+using Gestao.Pedidos.Recepcao.Handlers;
 using Gestao.Pedidos.Shared;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,7 @@ internal class Program
     {
         var mediator = ConfigurarMediatR();
 
-        var pedido = new Pedido();
+        var pedido = new Pedido("cliente@teste.com");
         var pagamentoService = new PagamentoService();
         var comunicacao = new Comunicacao(mediator);
 
@@ -76,6 +77,8 @@ internal class Program
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddMediatR(typeof(SepararPedidoHandler).Assembly);
         services.AddMediatR(typeof(AvisarEstoqueAbaixoHandler).Assembly);
+        services.AddMediatR(typeof(EnviarEmailAlteracaoEstadoPedidoHandler).Assembly);
+        
 
         // Constrói o ServiceProvider
         var serviceProvider = services.BuildServiceProvider();

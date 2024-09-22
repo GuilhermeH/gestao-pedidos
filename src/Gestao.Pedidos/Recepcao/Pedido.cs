@@ -1,8 +1,10 @@
 ﻿using Gestao.Pedidos.Pagamento;
+using Gestao.Pedidos.Recepcao.Eventos;
+using Gestao.Pedidos.Shared;
 
 namespace Gestao.Pedidos.Recepcao
 {
-    public class Pedido
+    public class Pedido : Entity
     {
         public Guid IdPedido { get; }
         public List<ItemPedido> Itens { get; } = [];
@@ -10,9 +12,11 @@ namespace Gestao.Pedidos.Recepcao
         public DateTime DataPedido { get; }
         public decimal ValorTotal { get; private set; }
         public IPagamento Pagamento { get; }
+        public string EmailCliente { get; }
 
-        public Pedido()
+        public Pedido(string emailCliente)
         {
+            EmailCliente = emailCliente;
             IdPedido = Guid.NewGuid();
             Estado = EstadoPedido.AguardandoProcessamento;
             DataPedido = DateTime.Now;
@@ -54,21 +58,25 @@ namespace Gestao.Pedidos.Recepcao
         public void ProcessandoPagamento()
         {
             Estado = EstadoPedido.ProcessandoPagamento;
+            AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(Estado, EmailCliente));
         }
 
         public void AguardandoEstoque()
         {
             Estado = EstadoPedido.AguardandoEstoque;
+            AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(Estado, EmailCliente));
         }
 
         public void ConcluindoPagamento()
         {
             Estado = EstadoPedido.ProcessandoPagamento;
+            AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(Estado, EmailCliente));
         }
 
         public void SeparandoPedido()
         {
             Estado = EstadoPedido.SeprandoPedido;
+            AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(Estado, EmailCliente));
         }
     }
 }
