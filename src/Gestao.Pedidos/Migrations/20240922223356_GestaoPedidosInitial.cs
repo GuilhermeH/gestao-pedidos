@@ -12,6 +12,23 @@ namespace Gestao.Pedidos.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Descontos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TipoDesconto = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
+                    QuantidadeAplicavel = table.Column<int>(type: "int", nullable: true),
+                    ValorEmReais = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    DataInicial = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DataFinal = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Porcentagem = table.Column<decimal>(type: "decimal(5,2)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Descontos", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pedidos",
                 columns: table => new
                 {
@@ -30,11 +47,20 @@ namespace Gestao.Pedidos.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Codigo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    QuantidadeEstoque = table.Column<int>(type: "int", nullable: false)
+                    Descricao = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    PrecoUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    QuantidadeEstoque = table.Column<int>(type: "int", nullable: false),
+                    DescontoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Produtos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Produtos_Descontos_DescontoId",
+                        column: x => x.DescontoId,
+                        principalTable: "Descontos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -70,6 +96,11 @@ namespace Gestao.Pedidos.Migrations
                 name: "IX_ItemsPedido_ProdutoId",
                 table: "ItemsPedido",
                 column: "ProdutoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Produtos_DescontoId",
+                table: "Produtos",
+                column: "DescontoId");
         }
 
         /// <inheritdoc />
@@ -83,6 +114,9 @@ namespace Gestao.Pedidos.Migrations
 
             migrationBuilder.DropTable(
                 name: "Produtos");
+
+            migrationBuilder.DropTable(
+                name: "Descontos");
         }
     }
 }

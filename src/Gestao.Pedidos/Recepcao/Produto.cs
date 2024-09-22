@@ -1,5 +1,6 @@
 ﻿using Gestao.Pedidos.Recepcao.Eventos;
 using Gestao.Pedidos.Shared;
+using System.Security.Principal;
 
 namespace Gestao.Pedidos.Recepcao;
 
@@ -7,9 +8,9 @@ public class Produto : Entity
 {
     protected Produto() //EF
     {
-        
+
     }
-    public Produto(string descricao, decimal precoUnitario, int quantidadeEstoque, IDesconto desconto)
+    public Produto(string descricao, decimal precoUnitario, int quantidadeEstoque, Desconto desconto)
     {
         Id = Guid.NewGuid();
         Codigo = Guid.NewGuid().ToString();
@@ -17,6 +18,7 @@ public class Produto : Entity
         PrecoUnitario = precoUnitario;
         QuantidadeEstoque = quantidadeEstoque;
         Desconto = desconto;
+        DescontoId = desconto.Id;
     }
 
     public Guid Id { get; set; }
@@ -24,7 +26,8 @@ public class Produto : Entity
     public string Descricao { get; }
     public decimal PrecoUnitario { get; }
     public int QuantidadeEstoque { get; private set; }
-    public IDesconto Desconto { get; }
+    public Desconto Desconto { get; private set; }
+    public Guid DescontoId { get; private set; }
     public bool DebitarEstoque(int quantidadeVendida)
     {
         if (quantidadeVendida < QuantidadeEstoque)
@@ -38,8 +41,12 @@ public class Produto : Entity
     }
 }
 
-public record DescontoSazonal : IDesconto
+public class DescontoSazonal : Desconto
 {
+    protected DescontoSazonal()
+    {
+        
+    }
     public DescontoSazonal(DateTime dataInicial, DateTime dataFinal, decimal porcentagem)
     {
         DataInicial = dataInicial;
@@ -47,12 +54,11 @@ public record DescontoSazonal : IDesconto
         Porcentagem = porcentagem;
     }
 
-    public DateTime DataInicial { get; }
-    public DateTime DataFinal { get; }
-    public decimal Porcentagem { get; }
-    public int QuantidadeEstoque { get; }
-
-    public decimal CalcularValor(decimal precoUnitario, int quantidade, DateTime dataPedido)
+    public Guid Id { get; private set; }
+    public DateTime DataInicial { get; private set; }
+    public DateTime DataFinal { get; private set; }
+    public decimal Porcentagem { get; private set; }
+    public override decimal CalcularValor(decimal precoUnitario, int quantidade, DateTime dataPedido)
     {
         if (dataPedido >= DataInicial && dataPedido <= DataFinal)
         {
@@ -64,18 +70,23 @@ public record DescontoSazonal : IDesconto
     }
 }
 
-public record DescontoQuantidade : IDesconto
+public class DescontoQuantidade : Desconto
 {
+    protected DescontoQuantidade()
+    {
+        
+    }
     public DescontoQuantidade(int quantidadeAplicavel, decimal valorEmReais)
     {
         QuantidadeAplicavel = quantidadeAplicavel;
         ValorEmReais = valorEmReais;
     }
 
-    public int QuantidadeAplicavel { get; }
-    public decimal ValorEmReais { get; }
+    public Guid Id { get; private set; }
+    public int QuantidadeAplicavel { get; private set; }
+    public decimal ValorEmReais { get; private set; }
 
-    public decimal CalcularValor(decimal precoUnitario, int quantidade, DateTime dataPedido)
+    public override decimal CalcularValor(decimal precoUnitario, int quantidade, DateTime dataPedido)
     {
         if (quantidade >= QuantidadeAplicavel)
         {
@@ -88,7 +99,15 @@ public record DescontoQuantidade : IDesconto
 
 public interface IDesconto
 {
+    public Guid Id { get; }
     decimal CalcularValor(decimal precoUnitario, int quantidade, DateTime dataPedido);
 }
 
+public abstract class Desconto : IDesconto
+{
+    public Guid Id { get; protected set; } = Guid.NewGuid();
+
+    // Método abstrato para calcular o valor do desconto
+    public abstract decimal CalcularValor(decimal precoUnitario, int quantidade, DateTime dataPedido);
+}
 

@@ -22,6 +22,26 @@ namespace Gestao.Pedidos.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Gestao.Pedidos.Recepcao.Desconto", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("TipoDesconto")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Descontos", (string)null);
+
+                    b.HasDiscriminator<string>("TipoDesconto").HasValue("Desconto");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("Gestao.Pedidos.Recepcao.ItemPedido", b =>
                 {
                     b.Property<Guid>("Id")
@@ -70,12 +90,54 @@ namespace Gestao.Pedidos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("DescontoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<decimal>("PrecoUnitario")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("QuantidadeEstoque")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Produtos");
+                    b.HasIndex("DescontoId");
+
+                    b.ToTable("Produtos", (string)null);
+                });
+
+            modelBuilder.Entity("Gestao.Pedidos.Recepcao.DescontoQuantidade", b =>
+                {
+                    b.HasBaseType("Gestao.Pedidos.Recepcao.Desconto");
+
+                    b.Property<int>("QuantidadeAplicavel")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ValorEmReais")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasDiscriminator().HasValue("Quantidade");
+                });
+
+            modelBuilder.Entity("Gestao.Pedidos.Recepcao.DescontoSazonal", b =>
+                {
+                    b.HasBaseType("Gestao.Pedidos.Recepcao.Desconto");
+
+                    b.Property<DateTime>("DataFinal")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataInicial")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Porcentagem")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.HasDiscriminator().HasValue("Sazonal");
                 });
 
             modelBuilder.Entity("Gestao.Pedidos.Recepcao.ItemPedido", b =>
@@ -91,6 +153,17 @@ namespace Gestao.Pedidos.Migrations
                         .IsRequired();
 
                     b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("Gestao.Pedidos.Recepcao.Produto", b =>
+                {
+                    b.HasOne("Gestao.Pedidos.Recepcao.Desconto", "Desconto")
+                        .WithMany()
+                        .HasForeignKey("DescontoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Desconto");
                 });
 
             modelBuilder.Entity("Gestao.Pedidos.Recepcao.Pedido", b =>
