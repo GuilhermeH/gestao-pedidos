@@ -7,29 +7,29 @@ namespace Gestao.Pedidos.Estoque.Handler
     {
         private readonly PedidoRepository _pedidoRepository;
         private readonly EstoqueService _estoqueService;
-        
+
         public SepararPedidoHandler()
         {
             _pedidoRepository = new PedidoRepository();
             _estoqueService = new EstoqueService();
         }
 
-        public async Task Handle(EnviarSeparacaoEstoqueEvent notification, 
+        public async Task Handle(EnviarSeparacaoEstoqueEvent notification,
             CancellationToken cancellationToken)
         {
             var pedido = await _pedidoRepository.ObterPedido(notification.PedidoId);
             pedido.SeparandoPedido();
-            
-            var sucesso = await _pedidoRepository.Commit();
 
-            //lançar evento para debitar estoque
-            if (sucesso)
-                pedido.Itens.ForEach(i => _estoqueService.DebitarEstoque(i.Produto.Codigo, i.Quantidade));
-                
+            if (pedido.EstoqueEmFalta())
+            {
+                pedido.AguardandoEstoque();
+                await _pedidoRepository.Commit();
+                return;
+            }
 
-                
-            
-            //save
+            pedido.Itens.ForEach(i => _estoqueService.DebitarEstoque(i.Produto.Codigo, i.Quantidade));
+
+            await _pedidoRepository.Commit();
         }
     }
 

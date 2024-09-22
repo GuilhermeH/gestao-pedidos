@@ -1,0 +1,39 @@
+﻿Recepção de pedidos
+ok ● O usuário pode criar um pedido com um ou mais itens. Cada item tem um preço e quantidade.
+ok ● O sistema deve calcular o valor total do pedido e aplicar possíveis descontos com base em
+regras de negócio de cada produto. As regras existentes são:
+○ Desconto por quantidade : Desconto em Reais para quantidades específicas;
+○ Desconto Sazonal: Conforme data do pedido, desconto em percentual do total
+ok ● Um pedido criado com sucesso, fica em estado "Aguardando processamento".
+ok ● Pedidos que estão aguardando processamento pode ser cancelados, consequentemente irão
+para o estado "Cancelado".
+
+
+Processando pagamento
+ok ● Pedidos que estão em "Aguardando processamento", devem entrar em novo estado que é
+"Processando Pagamento".
+ok ● Pedidos em estado: "Processando Pagamento" devem acionar uma estratégia de pagamento
+conforme dados do pedido, são elas:
+○ Pagamento à vista com Pix com desconto 5%
+○ Pagamento parcelado em até 12x no cartão
+ok ● Pagamento realizado com sucesso move pedido para estado "Pagamento Concluído"
+ok ● Pedidos em estado posterior ao de "Pagamento Concluído", podem ser cancelados, desde que
+exista uma operação de Estorno.
+ok ● Em caso de falha no processamento de pagamento realiza 3 tentativas em caso de falha de
+comunicação. Ao falhar pedido vai para estado cancelado.
+
+Separando Pedido
+ok ● Pedidos que estão em "Pagamento Concluído", devem entrar em novo estado que é "Separando
+Pedido".
+ok ● Pedidos em estado: "Separando Pedido" devem fazer a baixa dos produtos em estoque. Caso
+produto, não possua estoque enviar um email para vendas alertando a situação.
+ok ● Pedidos com produtos separados, com sucesso, vão para o estado de "Concluído".
+ok ● Pedidos que tiveram problema, na separação de itens, devem ir para o estado "Aguardando
+Estoque".
+● Pedidos que estão como "Concluído", não podem ser cancelados.
+● Pedidos que estão como "Aguardando Estoque" podem ser cancelados, realizando o Estorno de
+pagamento corretamente.
+
+● Cada troca de estado deve notificar o cliente, via email, o que aconteceu com o pedido.
+● 1 vez por dia gerar uma lista de pedidos do dia anterior e enviar para um endereço de email do
+dono do produto.

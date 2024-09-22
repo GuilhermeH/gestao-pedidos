@@ -75,6 +75,7 @@ internal class Program
         // Registra os serviços do MediatR
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddMediatR(typeof(SepararPedidoHandler).Assembly);
+        services.AddMediatR(typeof(AvisarEstoqueAbaixoHandler).Assembly);
 
         // Constrói o ServiceProvider
         var serviceProvider = services.BuildServiceProvider();

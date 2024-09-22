@@ -18,6 +18,11 @@ namespace Gestao.Pedidos.Recepcao
             DataPedido = DateTime.Now;
         }
 
+        public bool EstoqueEmFalta()
+        {
+            return Itens.Any(c => c.Produto.QuantidadeEstoque < c.Quantidade);
+        }
+
         public void AdicionarItem(ItemPedido item)
         {
             Itens.Add(item);
@@ -49,6 +54,11 @@ namespace Gestao.Pedidos.Recepcao
         public void ProcessandoPagamento()
         {
             Estado = EstadoPedido.ProcessandoPagamento;
+        }
+
+        public void AguardandoEstoque()
+        {
+            Estado = EstadoPedido.AguardandoEstoque;
         }
 
         public void ConcluindoPagamento()
