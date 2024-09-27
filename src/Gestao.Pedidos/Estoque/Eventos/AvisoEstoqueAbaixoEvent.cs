@@ -1,6 +1,6 @@
 ﻿using Gestao.Pedidos.Shared;
 
-namespace Gestao.Pedidos.Recepcao.Eventos
+namespace Gestao.Pedidos.Estoque.Eventos
 {
     public class AvisoEstoqueAbaixoEvent(string produto, string mensagem) : DomainEvent
     {

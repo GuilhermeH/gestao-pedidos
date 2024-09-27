@@ -1,4 +1,4 @@
-﻿using Gestao.Pedidos.Pagamento;
+﻿using Gestao.Pedidos.Pagamentos;
 using Gestao.Pedidos.Recepcao.Eventos;
 using Gestao.Pedidos.Shared;
 
@@ -10,13 +10,13 @@ namespace Gestao.Pedidos.Recepcao
         {
             
         }
-        public Guid IdPedido { get; }
+        public Guid IdPedido { get; private set; }
         public List<ItemPedido> Itens { get; } = [];
         public EstadoPedido Estado { get; private set; }
-        public DateTime DataPedido { get; }
+        public DateTime DataPedido { get; private set; }
         public decimal ValorTotal { get; private set; }
-        public IPagamento Pagamento { get; }
-        public string EmailCliente { get; }
+        public Pagamento Pagamento { get; private set; }
+        public string EmailCliente { get; private set; }
 
         public Pedido(string emailCliente)
         {
@@ -54,9 +54,15 @@ namespace Gestao.Pedidos.Recepcao
             if (Estado == EstadoPedido.AguardandoProcessamento)
             {
                 Estado = EstadoPedido.Cancelado;
+                AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(Estado, EmailCliente));
                 return true;
             }
             return false;
+        }
+
+        public void Concluir()
+        {
+            Estado = EstadoPedido.Concluido;
         }
 
         public void ProcessandoPagamento()
@@ -73,7 +79,7 @@ namespace Gestao.Pedidos.Recepcao
 
         public void ConcluindoPagamento()
         {
-            Estado = EstadoPedido.ProcessandoPagamento;
+            Estado = EstadoPedido.PagamentoConcluido;
             AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(Estado, EmailCliente));
         }
 

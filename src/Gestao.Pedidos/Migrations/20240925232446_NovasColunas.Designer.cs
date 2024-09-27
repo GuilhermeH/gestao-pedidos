@@ -4,6 +4,7 @@ using Gestao.Pedidos.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gestao.Pedidos.Migrations
 {
     [DbContext(typeof(GestaoPedidosDbContext))]
-    partial class GestaoPedidosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240925232446_NovasColunas")]
+    partial class NovasColunas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,15 +73,6 @@ namespace Gestao.Pedidos.Migrations
 
                     b.Property<Guid>("ProdutoId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Quantidade")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ValorDesconto")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("ValorUnitario")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 

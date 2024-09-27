@@ -4,6 +4,7 @@ using Gestao.Pedidos.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gestao.Pedidos.Migrations
 {
     [DbContext(typeof(GestaoPedidosDbContext))]
-    partial class GestaoPedidosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240926150731_ColunasPedidoItem")]
+    partial class ColunasPedidoItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

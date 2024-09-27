@@ -7,6 +7,7 @@
         ProcessandoPagamento,
         PagamentoConcluido,
         SeprandoPedido,
-        AguardandoEstoque
+        AguardandoEstoque,
+        Concluido
     }
 }

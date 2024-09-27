@@ -1,29 +1,28 @@
-﻿using Gestao.Pedidos.Recepcao;
+﻿using Gestao.Pedidos.Context;
+using Gestao.Pedidos.Recepcao;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gestao.Pedidos.Estoque
 {
-    public class PedidoRepository
-    {
-        private readonly List<Produto> Produtos;
-        private readonly List<Pedido> Pedidos;
-        public async Task<Pedido> ObterPedido(Guid pedidoId)
-        {
-            //throw new NotImplementedException();
-            return await Task.FromResult(Pedidos.FirstOrDefault());
-        }
+    //public class PedidoRepository(GestaoPedidosDbContext context)
+    //{
+    //    //public async Task<Pedido> ObterPedido(Guid pedidoId)
+    //    //{
+    //    //    var pedido = await context.Pedidos.Where(p => p.IdPedido == pedidoId).FirstOrDefaultAsync();
+    //    //    return pedido;
+    //    //}
 
-        public async Task<Produto> ObterProduto(string codigo)
-        {
-            //throw new NotImplementedException();
-            return await Task.FromResult(Produtos.FirstOrDefault());
-        }
+    //    //public async Task<Produto> ObterProduto(string codigo)
+    //    //{
+    //    //    var produto = await context.Produtos.FirstOrDefaultAsync(p => p.Codigo == codigo);
+    //    //    return produto;
+    //    //}
 
-        public async Task<bool> Commit()
-        {
-            //throw new NotImplementedException();
-            return true;
-        }
+    //    //public async Task<bool> Commit()
+    //    //{
+    //    //    return context.SaveChanges() > 0;
+    //    //}
 
 
-    }
+    //}
 }

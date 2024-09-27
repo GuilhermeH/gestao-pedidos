@@ -1,50 +1,34 @@
-﻿using Gestao.Pedidos.Pagamento.Eventos;
+﻿using Gestao.Pedidos.Estoque.Eventos;
+using Gestao.Pedidos.Pagamentos.Eventos;
+using Gestao.Pedidos.Recepcao;
 using MediatR;
 
 namespace Gestao.Pedidos.Estoque.Handler
 {
-    public class SepararPedidoHandler : INotificationHandler<EnviarSeparacaoEstoqueEvent>
+    public class SepararPedidoHandler(PedidoRepository pedidoRepository) : INotificationHandler<EnviarSeparacaoEstoqueEvent>
     {
-        private readonly PedidoRepository _pedidoRepository;
-        private readonly EstoqueService _estoqueService;
-
-        public SepararPedidoHandler()
-        {
-            _pedidoRepository = new PedidoRepository();
-            _estoqueService = new EstoqueService();
-        }
-
         public async Task Handle(EnviarSeparacaoEstoqueEvent notification,
             CancellationToken cancellationToken)
         {
-            var pedido = await _pedidoRepository.ObterPedido(notification.PedidoId);
-            pedido.SeparandoPedido();
+            Console.WriteLine(nameof(SepararPedidoHandler));
+            var pedido = await pedidoRepository.ObterPedido(notification.PedidoId);
 
-            if (pedido.EstoqueEmFalta())
-            {
-                pedido.AguardandoEstoque();
-                await _pedidoRepository.Commit();
-                return;
-            }
+            if (pedido.Estado == EstadoPedido.PagamentoConcluido)
+                pedido.SeparandoPedido();
 
-            pedido.Itens.ForEach(i => _estoqueService.DebitarEstoque(i.Produto.Codigo, i.Quantidade));
+            pedido.Itens.ForEach(item => item.AdicionarEvento(new DebitarEstoqueEvent(item, pedido.IdPedido)));
 
-            await _pedidoRepository.Commit();
+            //if (pedido.EstoqueEmFalta())
+            //{
+            //    pedido.AguardandoEstoque();
+            //    await pedidoRepository.Commit();
+            //    return;
+            //}
+
+            //pedido.Itens.ForEach(i => estoqueService.DebitarEstoque(i.Produto.Codigo, i.Quantidade));
+
+            await pedidoRepository.AtualizarPedido(pedido);
         }
     }
-
-    //public async Task Handle(EnviarSeparacaoEstoqueEvent notification, CancellationToken cancellationToken)
-    //{
-    //    //var pedido = await _pedidoRepository.ObterPedido(notification.Pedido);
-    //    notification.Pedido.SeparandoPedido();
-    //    thrw
-    //    //SaveChanges
-
-    //}
-
-    //Task<bool> IRequestHandler<EnviarSeparacaoEstoqueEvent>.Handle(EnviarSeparacaoEstoqueEvent request, CancellationToken cancellationToken)
-    //{
-    //    throw new NotImplementedException();
-    //}
 }
 

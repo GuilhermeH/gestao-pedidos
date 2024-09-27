@@ -1,6 +1,5 @@
 ﻿using Gestao.Pedidos.Recepcao.Eventos;
 using Gestao.Pedidos.Shared;
-using System.Security.Principal;
 
 namespace Gestao.Pedidos.Recepcao;
 
@@ -13,7 +12,8 @@ public class Produto : Entity
     public Produto(string descricao, decimal precoUnitario, int quantidadeEstoque, Desconto desconto)
     {
         Id = Guid.NewGuid();
-        Codigo = Guid.NewGuid().ToString();
+        var guidString = Id.ToString();
+        Codigo = guidString.Substring(guidString.Length -4);
         Descricao = descricao;
         PrecoUnitario = precoUnitario;
         QuantidadeEstoque = quantidadeEstoque;
@@ -32,11 +32,11 @@ public class Produto : Entity
     {
         if (quantidadeVendida < QuantidadeEstoque)
         {
-            AdicionarEvento(new AvisoEstoqueAbaixoEvent(Descricao, "Produto abaixo do estoque."));
+            //AdicionarEvento(new AvisoEstoqueAbaixoEvent(Descricao, "Produto abaixo do estoque."));
             return false;
         }
 
-        QuantidadeEstoque = -quantidadeVendida;
+        QuantidadeEstoque =- quantidadeVendida;
         return true;
     }
 }
