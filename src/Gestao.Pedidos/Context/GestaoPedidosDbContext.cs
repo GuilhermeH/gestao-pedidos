@@ -23,16 +23,8 @@ namespace Gestao.Pedidos.Context
 
         public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var sucesso = false;
-            try
-            {
-                sucesso = await base.SaveChangesAsync(cancellationToken) > 0;
-            }
-            catch (Exception)
-            {
-                sucesso = false;
+            var sucesso = await base.SaveChangesAsync(cancellationToken) > 0;
 
-            }
             if (sucesso)
             {
                 var domainEntities = ChangeTracker
@@ -46,17 +38,10 @@ namespace Gestao.Pedidos.Context
                 domainEntities.ToList()
                     .ForEach(entity => entity.Entity.LimparEventos());
 
-
                 foreach (var evento in domainEvents)
                 {
                     await _mediator.Publish(evento, cancellationToken);
                 }
-                //var tasks = domainEvents
-                //    .Select(async (domainEvent) => {
-                //        await mediator.Publish(domainEvent);
-                //    });
-
-                //await Task.WhenAll(tasks);
             }
 
             return sucesso;

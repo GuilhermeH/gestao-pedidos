@@ -13,7 +13,7 @@ using System.Reflection;
 
 internal class Program
 {
-    
+
     private static async Task Main(string[] args)
     {
         // Criar o host para configurar o DI
@@ -55,43 +55,6 @@ internal class Program
                     services.AddScoped<ProdutoRepository>();
                     services.AddScoped<GestaoPedidosDbContext>();
                 });
-
-
-    static void ConfigurarMediatR()
-    {
-        var services = new ServiceCollection();
-
-        // Registra os serviços do MediatR
-        // services.AddMediatR(Assembly.GetExecutingAssembly());
-        services.AddMediatR(typeof(Program));
-        //services.AddMediatR(typeof(SepararPedidoHandler).Assembly);
-        //services.AddMediatR(typeof(AvisarEstoqueAbaixoHandler).Assembly);
-        //services.AddMediatR(typeof(DebitarEstoqueHandler).Assembly);
-        //services.AddMediatR(typeof(EnviarEmailAlteracaoEstadoPedidoHandler).Assembly);
-
-        //services.AddScoped<INotificationHandler<AvisarClienteAlteracaoEstadoPedidoEvent>, EnviarEmailAlteracaoEstadoPedidoHandler>();
-        //services.AddScoped<INotificationHandler<EnviarSeparacaoEstoqueEvent>, SepararPedidoHandler>();
-        //services.AddScoped<INotificationHandler<DebitarEstoqueEvent>, DebitarEstoqueHandler>();
-        //services.AddScoped<INotificationHandler<AvisarClienteAlteracaoEstadoPedidoEvent>, EnviarEmailAlteracaoEstadoPedidoHandler>();
-        services.AddScoped<GestaoPedidosDbContext>();
-        services.AddScoped<PedidoRepository>();
-        services.AddScoped<ProdutoRepository>();
-        services.AddScoped<GestaoPedidosDbContext>();
-
-        // Constrói o ServiceProvider
-        var serviceProvider = services.BuildServiceProvider();
-
-        // Resolve o MediatR (usado para enviar comandos e consultas)
-        //var mediator = serviceProvider.GetRequiredService<IMediator>();
-
-
-
-
-
-        // return mediator;
-    }
-
-    
 }
 
 public class GestaoApp
@@ -113,24 +76,13 @@ public class GestaoApp
         var pagamentoService = new PagamentoService();
         //var comunicacao = new Comunicacao(mediator);
 
-
-
         var escolhendoProdutos = true;
 
         while (escolhendoProdutos)
         {
-            try
-            {
-                var produtos = await ListarProdutos();
-            }
-            catch (Exception ex)
-            {
+            var produtos = await ListarProdutos();
 
-                throw;
-            }
-            var produtos2 = await ListarProdutos();
-
-            var produtoSelecionado = SelecionarProduto(produtos2);
+            var produtoSelecionado = SelecionarProduto(produtos);
             var quantidade = DefinirQuantidade();
 
             Console.WriteLine($"\n\nPara sair digite S ou ENTER para continuar escolhendo produtos.");
@@ -138,8 +90,6 @@ public class GestaoApp
 
             if (comando.KeyChar == 's' || comando.KeyChar == 'S')
                 escolhendoProdutos = false;
-
-            //pedido = await pedidoRepository.ObterPedido(pedido.IdPedido);
 
             pedido.AdicionarItem(new ItemPedido(produtoSelecionado, quantidade, pedido.DataPedido));
 
@@ -173,8 +123,6 @@ public class GestaoApp
                     Console.WriteLine($"{item.Produto.Desconto.GetType().Name} aplicado para o item {item.Produto.Descricao} no valor de {item.ValorDesconto}");
             }
         }
-
-
 
         //Pagamento
         await ProcessarPagamento(pedido.IdPedido);
