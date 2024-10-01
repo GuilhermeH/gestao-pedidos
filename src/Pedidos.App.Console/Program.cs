@@ -7,6 +7,7 @@ using Gestao.Pedidos.Recepcao;
 using Gestao.Pedidos.Recepcao.Eventos;
 using Gestao.Pedidos.Recepcao.Handlers;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
@@ -38,19 +39,22 @@ internal class Program
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((context, services) =>
                 {
+                    var builder = new ConfigurationBuilder()
+                       .SetBasePath(Directory.GetCurrentDirectory())
+                       .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                       .AddUserSecrets<Program>()
+                       .Build();
+
                     // Registrar os serviços aqui
                     services.AddTransient<GestaoApp>(); // Adicionar a classe principal
+                    services.AddSingleton<IConfiguration>(builder);
                     services.AddMediatR(Assembly.GetExecutingAssembly());
-                    //services.AddMediatR(typeof(SepararPedidoHandler).Assembly);
-                    //services.AddMediatR(typeof(AvisarEstoqueAbaixoHandler).Assembly);
-                    //services.AddMediatR(typeof(DebitarEstoqueHandler).Assembly);
-                    //services.AddMediatR(typeof(EnviarEmailAlteracaoEstadoPedidoHandler).Assembly);
+                  
 
                     services.AddScoped<INotificationHandler<AvisarClienteAlteracaoEstadoPedidoEvent>, EnviarEmailAlteracaoEstadoPedidoHandler>();
                     services.AddScoped<INotificationHandler<EnviarSeparacaoEstoqueEvent>, SepararPedidoHandler>();
                     services.AddScoped<INotificationHandler<DebitarEstoqueEvent>, DebitarEstoqueHandler>();
-                    services.AddScoped<INotificationHandler<AvisarClienteAlteracaoEstadoPedidoEvent>, EnviarEmailAlteracaoEstadoPedidoHandler>();
-
+                    
                     services.AddScoped<PedidoRepository>();
                     services.AddScoped<ProdutoRepository>();
                     services.AddScoped<GestaoPedidosDbContext>();
@@ -74,7 +78,6 @@ public class GestaoApp
 
         var pedido = new Pedido(emailCLiente);
         var pagamentoService = new PagamentoService();
-        //var comunicacao = new Comunicacao(mediator);
 
         var escolhendoProdutos = true;
 

@@ -30,13 +30,12 @@ public class Produto : Entity
     public Guid DescontoId { get; private set; }
     public bool DebitarEstoque(int quantidadeVendida)
     {
-        if (quantidadeVendida < QuantidadeEstoque)
+        if (quantidadeVendida > QuantidadeEstoque)
         {
-            //AdicionarEvento(new AvisoEstoqueAbaixoEvent(Descricao, "Produto abaixo do estoque."));
             return false;
         }
 
-        QuantidadeEstoque =- quantidadeVendida;
+        QuantidadeEstoque -= quantidadeVendida;
         return true;
     }
 }

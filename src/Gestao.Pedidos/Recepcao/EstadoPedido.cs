@@ -6,7 +6,7 @@
         Cancelado,
         ProcessandoPagamento,
         PagamentoConcluido,
-        SeprandoPedido,
+        SeparandoPedido,
         AguardandoEstoque,
         Concluido
     }

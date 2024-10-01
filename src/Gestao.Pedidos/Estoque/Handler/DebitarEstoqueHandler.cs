@@ -8,20 +8,22 @@ namespace Gestao.Pedidos.Estoque.Handler
     {
         public async Task Handle(DebitarEstoqueEvent notification, CancellationToken cancellationToken)
         {
-            Console.WriteLine(nameof(DebitarEstoqueHandler));
+            Console.WriteLine($"{nameof(DebitarEstoqueHandler)} - {notification.ItemPedido.Id}");
             var produto = await produtoRepository.ObterProduto(notification.ItemPedido.ProdutoId);
             var sucesso = produto.DebitarEstoque(notification.ItemPedido.Quantidade);
 
             var pedido = await pedidoRepository.ObterPedido(notification.PedidoId);
 
-            if (!sucesso)
+            if (sucesso)
+            {
+                pedido.Concluir();
+            }
+            else
             {
                 pedido.AguardandoEstoque();
-                produto.AdicionarEvento(new AvisoEstoqueAbaixoEvent(produto.Descricao, $"Produto abaixo do estoque."));
-                return;
+                produto.AdicionarEvento(new AvisoEstoqueAbaixoEvent(produto.Descricao, "Produto abaixo do estoque."));
             }
 
-            pedido.Concluir();
             await pedidoRepository.AtualizarPedido(pedido);
         }
     }

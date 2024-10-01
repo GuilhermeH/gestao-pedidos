@@ -9,6 +9,6 @@ public class AvisarEstoqueAbaixoHandler : INotificationHandler<AvisoEstoqueAbaix
     {
         Console.WriteLine(nameof(AvisarEstoqueAbaixoHandler));
         Console.WriteLine($"Enviando e-mail para vendas: O produto {notification.Produto} está abaixo do estoque.");
-        
+
     }
 }

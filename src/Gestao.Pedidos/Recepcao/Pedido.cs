@@ -54,7 +54,7 @@ namespace Gestao.Pedidos.Recepcao
             if (Estado == EstadoPedido.AguardandoProcessamento)
             {
                 Estado = EstadoPedido.Cancelado;
-                AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(Estado, EmailCliente));
+                AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(IdPedido, Estado, EmailCliente));
                 return true;
             }
             return false;
@@ -68,25 +68,25 @@ namespace Gestao.Pedidos.Recepcao
         public void ProcessandoPagamento()
         {
             Estado = EstadoPedido.ProcessandoPagamento;
-            AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(Estado, EmailCliente));
+            AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(IdPedido, Estado, EmailCliente));
         }
 
         public void AguardandoEstoque()
         {
             Estado = EstadoPedido.AguardandoEstoque;
-            AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(Estado, EmailCliente));
+            AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(IdPedido, Estado, EmailCliente));
         }
 
         public void ConcluindoPagamento()
         {
             Estado = EstadoPedido.PagamentoConcluido;
-            AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(Estado, EmailCliente));
+            AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(IdPedido, Estado, EmailCliente));
         }
 
         public void SeparandoPedido()
         {
-            Estado = EstadoPedido.SeprandoPedido;
-            AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(Estado, EmailCliente));
+            Estado = EstadoPedido.SeparandoPedido;
+            AdicionarEvento(new AvisarClienteAlteracaoEstadoPedidoEvent(IdPedido, Estado, EmailCliente));
         }
     }
 }
